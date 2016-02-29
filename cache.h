@@ -9,8 +9,8 @@
 #include <math.h>
 #include <vector>	
 #include <iomanip>	
-#include "defaults.h"
 
+#include "defaults.h"
 
 using namespace std;
 
@@ -30,6 +30,7 @@ typedef struct cache_statistics_ {
 	double bandwidth;
 } cache_statistics;
 
+typedef vector <cache_line> cache_lines;
 
 class cache {
 	
@@ -61,20 +62,22 @@ class cache {
 		/*Run cache based on given input stream for #lines, -1 means complete run*/
 		bool run(istream& stream, int lines=-1); //run cache from stream.. can do cin as well
 
-		/*Return the cache line to be replacement based on the replacement policy*/
-		int get_replacement_line( int set_number );
+		/*Set Virtual bank id and line in the bank to be replaced based on the replacement policy*/
+		int get_replacement_line( cache_lines replacement_lines );
 
 		/*In case a line in the set needs to be replaced */
-		int implement_replacement_policy(int index, int max_index, int policy_number); 
+		//int implement_replacement_policy(int index, int max_index, int policy_number); 
 	
 	private:
 		uint size; //in B
 		int associativity; //should be to the power of 2
+		int number_virtual_banks; //keep track of virtual banks for implementing associativity 
 		int banks; //just use 1 for now
 		int number_cache_lines; //total number
 		int number_cache_sets;
 		int number_data_blocks; //per cache line
-		vector <cache_line> cache_lines;
+		//vector <cache_line> cache_lines;
+		vector <cache_lines> virtual_banks; //bank = collection of cache lines that belong to different sets
 		cache_statistics stats; 
 		cache *lower_level;	
 		cache *upper_level; 
