@@ -18,7 +18,7 @@ typedef vector < vector < ReplacementStats > > ReplacementStatsBanks; //Replacem
 
 
 /*Helper function to implement replacement policy*/
-int implement_replacement_policy (cache_lines replacement_lines, int policy_number);
+int implement_replacement_policy (CacheLines replacement_lines, int policy_number);
 
 /*Implement FIFO*/
 int fifo(cache_lines replacement_lines, int number_banks);

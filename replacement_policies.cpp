@@ -4,7 +4,7 @@
 
 #include "replacement_policies.h"
 
-int cache::get_replacement_line( cache_lines replacement_lines ) {
+int Cache::get_replacement_line(CacheLines replacement_lines ) {
 	
 	int return_bank_id = 0;
 
@@ -53,7 +53,7 @@ int cache::implement_replacement_policy(int index, int max_index, int policy_num
 	return return_cache_line;
 }*/
 
-int implement_replacement_policy (cache_lines replacement_lines, int policy_number) {
+int implement_replacement_policy (CacheLines replacement_lines, int policy_number) {
 	srand(time(0));
 	int return_bank_id = -1;
 	int number_banks = replacement_lines.size();
