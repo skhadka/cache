@@ -26,6 +26,9 @@ int cache::get_replacement_line( cache_lines replacement_lines ) {
 			return_bank_id = implement_replacement_policy(replacement_lines, this->replacement_policy);
 			this->stats.replacements += 1; //something was replaced
 		}
+		else { /*No Conflit => empty */
+
+		}
 	}
 	else { //Just 1 virtual bank for DMC
 		return_bank_id = 0;

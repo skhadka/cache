@@ -99,7 +99,7 @@ class cache {
 
 		/*Replacement Policies*/
 		int replacement_policy;
-		int current_replacement_ordering; //keep track of the current 
+		vector < vector <int> > max_replacement_ordering; //max_replacement_ordering[bank_id][set_index] = max. ordering
 
 		/*need hash functions for associativity later*/ 
 };

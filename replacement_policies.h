@@ -9,6 +9,12 @@
 #include <time.h>
 #include <stdlib.h>
 
+typedef struct rp_stats_ {
+	int max_replacement_ordering;
+	double max_replacement_count;
+} ReplacementStats;
+
+typedef vector < vector < ReplacementStats > > ReplacementStatsBanks; //ReplacementStatsBanks[bank_id][set_id] => ReplacementStats
 
 
 /*Helper function to implement replacement policy*/

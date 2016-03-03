@@ -17,6 +17,7 @@ replacement_policy(in_replacement_policy)
 
 	for (int vbanks=0; vbanks<this->number_virtual_banks; ++vbanks) {
 		cache_lines bank;
+		//vector <int> replacement_ordering_list;
 		for (int i=0; i<this->number_cache_sets; ++i) {
 			/*Initialize Cache Line*/
 			cache_line line = {
@@ -29,8 +30,10 @@ replacement_policy(in_replacement_policy)
 				0,		//access_count
 			};
 			bank.push_back(line);
+			replacement_ordering_list.push_back(0);
 		}
 		this->virtual_banks.push_back(bank); //push each bank in the virtual bank vector
+		//this->max_replacement_ordering.push_back(replacement_ordering_list);
 	}
 
 	/*Initialize Cache Stats*/
@@ -120,7 +123,7 @@ bool cache::access(uint address, bool write) {
 	}
 
 	/*Update Ordering and Count for Replacement Policies*/
-	this->virtual_banks[cache_bank_id][cache_index].replacement_ordering = 1; //most recently used => least order = 1 
+	this->virtual_banks[cache_bank_id][cache_index].replacement_ordering += 1; //most recently used => least order = 1 
 	this->virtual_banks[cache_bank_id][cache_index].access_count += 1;
 
 	return hit;
