@@ -2,24 +2,29 @@
 	Ducksim: Cache
 */
 
+#include <stdlib.h>
 #include "cache.h"
 #include "hash_functions.h"
 
 
-cache::cache(uint in_size, int in_associativity, int in_banks, int in_number_cache_lines, int in_number_data_blocks, int in_replacement_policy) 
-: size(in_size), associativity(in_associativity), banks(in_banks), 
-number_cache_lines(in_number_cache_lines), number_data_blocks(in_number_data_blocks),
-replacement_policy(in_replacement_policy)
+Cache::Cache(uint in_size, int in_associativity, int in_banks, int in_number_cache_lines,
+             int in_number_data_blocks, ReplacementPolicy in_replacement_policy)
+    : size(in_size)
+    , associativity(in_associativity)
+    , banks(in_banks)
+    , number_cache_lines(in_number_cache_lines)
+    , number_data_blocks(in_number_data_blocks)
+    , replacement_policy(in_replacement_policy)
 {
 	if (in_associativity==0) this->associativity = this->number_cache_lines; //Fully Associative
 	this->number_virtual_banks = this->associativity;
 	this->number_cache_sets = this->number_cache_lines / this->associativity; 
 
 	for (int vbanks=0; vbanks<this->number_virtual_banks; ++vbanks) {
-		cache_lines bank;
+		CacheLines bank;
 		for (int i=0; i<this->number_cache_sets; ++i) {
 			/*Initialize Cache Line*/
-			cache_line line = {
+			CacheLine line = {
 				0, 			//tag
 				false, 	//valid
 				false, 	//dirty
@@ -32,7 +37,7 @@ replacement_policy(in_replacement_policy)
 
 	/*Initialize Cache Stats*/
 
-	this->stats = (cache_statistics){
+	this->stats = (CacheStatistics){
 		0,	//hits
 		0,	//misses
 		0, 	//access 
@@ -46,12 +51,12 @@ replacement_policy(in_replacement_policy)
 	this->lower_level = NULL;
 }
 
-cache::~cache() {
+Cache::~Cache() {
 	//nothing malloced yet!
 }
 
 /* Set all valid & dirty bits to 0 for cache reinitialization */
-void cache::reinit_cache(){
+void Cache::reinit_cache(){
 	for (int i=0; i<this->number_virtual_banks; ++i) {
 		for (int j=0; j<this->number_cache_sets; ++j) {
 			this->virtual_banks[i][j].valid = false;
@@ -61,7 +66,7 @@ void cache::reinit_cache(){
 }
 
 /* Check if an address is in the cache and update hit/miss counts accordingly */
-bool cache::access(uint address, bool write) {
+bool Cache::access(uint address, bool write) {
 
 	int offset = address % this->number_data_blocks; //will need this when actually reading/writing data
 	address = address / this->number_data_blocks; //get rid of block offset
@@ -75,8 +80,8 @@ bool cache::access(uint address, bool write) {
 	//int access_index = access_set_index * this->associativity;
 	//int max_access_index = access_index + this->associativity;
 
-	cache_lines replacement_lines; //keep track of lines to be replaced so that replacement policy can select which one of them to replace later on
-	vector <int> replacement_indexes; 
+	CacheLines replacement_lines; //keep track of lines to be replaced so that replacement policy can select which one of them to replace later on
+	vector<int> replacement_indexes;
 
 	for (int vbank=0; vbank<this->number_virtual_banks; ++vbank) {
 		int access_set_index = hash_address(access_index, vbank, this->number_cache_sets, true); //get the set index where the index is mapped to in each bank : Rightnow just set associative
@@ -109,7 +114,7 @@ bool cache::access(uint address, bool write) {
 }
 
 /*Dump all cache stats*/
-void cache::dump_stats(ostream& stream) {
+void Cache::dump_stats(ostream& stream) {
 	stream << "\n------------------- Cache Stats -------------------"<<endl;
 	stream << "Hit Rate: "<<(double)this->stats.hits/this->stats.access<<endl;
 	stream << "Miss Rate: "<<(double)this->stats.misses/this->stats.access<<endl;
@@ -124,12 +129,12 @@ void cache::dump_stats(ostream& stream) {
 }
 
 /*Dump all cache settings*/
-void cache::dump_settings(ostream& stream) {
+void Cache::dump_settings(ostream& stream) {
 
 }
 
 /*Dump Current Cache State*/
-void cache::dump_cache(ostream& stream) { /*Will need more changes with skewed associative as we need to rehash to get back original index from the hashed index*/
+void Cache::dump_cache(ostream& stream) { /*Will need more changes with skewed associative as we need to rehash to get back original index from the hashed index*/
 	stream << "\n------------------- Cache State -------------------"<<endl;
 	stream <<"Line\tBank\tSetIndex\tTag\tValid\tData"<<endl;
 	for (int i=0; i<this->number_cache_lines; ++i) {
@@ -149,7 +154,7 @@ void cache::dump_cache(ostream& stream) { /*Will need more changes with skewed a
 	stream << "--------------------------------------------------"<<endl;	
 }
 
-bool cache::run(istream& stream, int lines) {
+bool Cache::run(istream& stream, int lines) {
 	char hex_address[11];
 	if (lines <= 0) {
 		while(stream.getline(hex_address, 11)) {

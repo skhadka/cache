@@ -11,37 +11,45 @@
 #include <iomanip>	
 
 #include "defaults.h"
+#include "types.h"
 
 using namespace std;
 
-typedef struct cache_line_ {
+struct CacheLine {
 	uint tag;
 	bool valid;
 	bool dirty;
 	int number_data_blocks; //in B
-} cache_line;
+};
 
-typedef struct cache_statistics_ {
+struct CacheStatistics {
 	uint hits;
 	uint misses;
 	uint access; //total memory references 
 	uint replacements; //total number of cache line replacements
 	uint write_backs; //total number of write backs
 	double bandwidth;
-} cache_statistics;
+};
 
-typedef vector <cache_line> cache_lines;
+/**
+ * CacheLines is a collection of CacheLine objects, held in a vector.
+ */
+typedef vector<CacheLine> CacheLines;
 
-class cache {
+
+/**
+ * Describes a cache
+ */
+class Cache {
 	
 	public: 
 		/*Default Constructor*/
-		cache(uint in_size=CACHE_SIZE, int in_associativity=ASSOCIATIVITY, int in_banks=BANKS, 
+		Cache(uint in_size=CACHE_SIZE, int in_associativity=ASSOCIATIVITY, int in_banks=BANKS,
 			int in_number_cache_lines=NUMBER_CACHE_LINES, int in_number_data_blocks=NUMBER_DATA_BLOCKS, 
-			int in_replacement_policy=REPLACEMENT_POLICY);
+			ReplacementPolicy in_replacement_policy=REPLACEMENT_POLICY);
 		
 		/*Default Destructor*/
-		~cache();
+		~Cache();
 
 		/*Reinitialize cache usually after a program is complete*/
 		void reinit_cache();
@@ -63,7 +71,7 @@ class cache {
 		bool run(istream& stream, int lines=-1); //run cache from stream.. can do cin as well
 
 		/*Set Virtual bank id and line in the bank to be replaced based on the replacement policy*/
-		int get_replacement_line( cache_lines replacement_lines );
+		int get_replacement_line( CacheLines replacement_lines );
 
 		/*In case a line in the set needs to be replaced */
 		//int implement_replacement_policy(int index, int max_index, int policy_number); 
@@ -77,11 +85,11 @@ class cache {
 		int number_cache_sets;
 		int number_data_blocks; //per cache line
 		//vector <cache_line> cache_lines;
-		vector <cache_lines> virtual_banks; //bank = collection of cache lines that belong to different sets
-		cache_statistics stats; 
-		cache *lower_level;	
-		cache *upper_level; 
-		int replacement_policy;
+		vector<CacheLines> virtual_banks; //bank = collection of cache lines that belong to different sets
+		CacheStatistics stats;
+		Cache *lower_level;
+    Cache *upper_level;
+		ReplacementPolicy replacement_policy;
 		/*need hash functions for associativity later*/ 
 };
 
