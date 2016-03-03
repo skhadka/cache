@@ -24,6 +24,9 @@ replacement_policy(in_replacement_policy)
 				false, 	//valid
 				false, 	//dirty
 				in_number_data_blocks, //number_data_blocks
+				
+				0,		//replacement_ordering
+				0,		//access_count
 			};
 			bank.push_back(line);
 		}
@@ -56,6 +59,7 @@ void cache::reinit_cache(){
 		for (int j=0; j<this->number_cache_sets; ++j) {
 			this->virtual_banks[i][j].valid = false;
 			this->virtual_banks[i][j].dirty = false;
+			this->virtual_banks[i][j].replacement_ordering = 0;
 		}
 	}
 }
@@ -78,12 +82,18 @@ bool cache::access(uint address, bool write) {
 	cache_lines replacement_lines; //keep track of lines to be replaced so that replacement policy can select which one of them to replace later on
 	vector <int> replacement_indexes; 
 
+	/*Final values*/
+	int cache_bank_id = -1;
+	int cache_index = -1;
+
 	for (int vbank=0; vbank<this->number_virtual_banks; ++vbank) {
 		int access_set_index = hash_address(access_index, vbank, this->number_cache_sets, true); //get the set index where the index is mapped to in each bank : Rightnow just set associative
 		cout <<"VBank\tTag\tSIndex\tOffset"<<endl;
 		cout <<vbank<<"\t"<<access_set_tag <<"\t" <<access_set_index <<"\t" <<offset <<endl;
 		if (this->virtual_banks[vbank][access_set_index].valid && (this->virtual_banks[vbank][access_set_index].tag == access_set_tag)) {//hit condition
 				hit = true;
+				cache_bank_id = vbank;
+				cache_index = access_set_index;
 				this->virtual_banks[vbank][access_set_index].dirty = write; //it's been written to now.. so set the dirty bit -- need to implement the write policy here.. later
 				break;
 		}
@@ -104,7 +114,15 @@ bool cache::access(uint address, bool write) {
 		this->virtual_banks[replacement_bank_id][replacement_set_index].tag = access_set_tag;
 		this->virtual_banks[replacement_bank_id][replacement_set_index].valid = true;
 		this->stats.misses += 1;
+
+		cache_bank_id = replacement_bank_id;
+		cache_index = replacement_set_index;
 	}
+
+	/*Update Ordering and Count for Replacement Policies*/
+	this->virtual_banks[cache_bank_id][cache_index].replacement_ordering = 1; //most recently used => least order = 1 
+	this->virtual_banks[cache_bank_id][cache_index].access_count += 1;
+
 	return hit;
 }
 

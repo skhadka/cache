@@ -19,6 +19,18 @@ typedef struct cache_line_ {
 	bool valid;
 	bool dirty;
 	int number_data_blocks; //in B
+
+	/*	For replacement Policies based on Access Order
+		Replacement Element will have replacement_ordering = number_of_virtual_banks - 1;
+		FIFO, LRU
+	*/
+	int replacement_ordering;
+
+	/*	For replacement Policies based on Access count
+		LU
+	*/
+	double access_count;
+
 } cache_line;
 
 typedef struct cache_statistics_ {
@@ -69,6 +81,7 @@ class cache {
 		//int implement_replacement_policy(int index, int max_index, int policy_number); 
 	
 	private:
+		/*Config*/
 		uint size; //in B
 		int associativity; //should be to the power of 2
 		int number_virtual_banks; //keep track of virtual banks for implementing associativity 
@@ -78,10 +91,16 @@ class cache {
 		int number_data_blocks; //per cache line
 		//vector <cache_line> cache_lines;
 		vector <cache_lines> virtual_banks; //bank = collection of cache lines that belong to different sets
-		cache_statistics stats; 
 		cache *lower_level;	
-		cache *upper_level; 
+		cache *upper_level;
+
+		/*Stats*/
+		cache_statistics stats; 
+
+		/*Replacement Policies*/
 		int replacement_policy;
+		int current_replacement_ordering; //keep track of the current 
+
 		/*need hash functions for associativity later*/ 
 };
 
