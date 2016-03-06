@@ -31,8 +31,8 @@ Cache::Cache(uint in_size, int in_associativity, int in_banks, int in_number_cac
 				false, 	//dirty
 				in_number_data_blocks, //number_data_blocks
 				
-				0,		//replacement_ordering
-				0,		//access_count
+				//0,		//replacement_ordering
+				//0,		//access_count
 			};
 			bank.push_back(line);
 			replacement_ordering_list.push_back(0);
@@ -42,14 +42,13 @@ Cache::Cache(uint in_size, int in_associativity, int in_banks, int in_number_cac
 	}
 
 	/*Initialize Cache Stats*/
-
 	this->stats = (CacheStatistics){
 		0,	//hits
 		0,	//misses
 		0, 	//access 
 		0,	//replacements
 		0,	//write_backs
-		0,	//bandwidth
+		//0,	//bandwidth
 	};
 
 	/*Initilize upper and lower levels*/
@@ -67,7 +66,7 @@ void Cache::reinit_cache(){
 		for (int j=0; j<this->number_cache_sets; ++j) {
 			this->virtual_banks[i][j].valid = false;
 			this->virtual_banks[i][j].dirty = false;
-			this->virtual_banks[i][j].replacement_ordering = 0;
+			//this->virtual_banks[i][j].replacement_ordering = 0;
 		}
 	}
 }
@@ -194,4 +193,37 @@ bool Cache::run(istream& stream, int lines) {
 		}
 	}
 	return true;
+}
+
+int Cache::get_replacement_line(CacheLines replacement_lines ) {
+	
+	int return_bank_id = -1;
+
+	if (this->associativity != 1) { /* Not DMC -- need to worry about replacement policies*/ 
+		
+		/* Check for conflict i.e. check if all the replacement lines are valid */
+		bool conflict = true; 
+		int vbank = 0;
+		while (vbank < this->number_virtual_banks) {
+			if (! replacement_lines[vbank].valid) {
+				conflict = false;
+				return_bank_id = vbank;
+				vbank = this->number_virtual_banks; //found invalid line => STOP & use that for replacement 
+			}
+			vbank += 1;
+		} 
+		/*If conflict then need to implement replacement policy*/
+		if (conflict) {
+			return_bank_id = implement_replacement_policy(replacement_lines, this->replacement_policy);
+			this->stats.replacements += 1; //something was replaced
+		}
+		else { 
+			/* No Conflit => already found a replacement => nothing else to do.. */
+		}
+	}
+	else { //Just 1 virtual bank for DMC
+		return_bank_id = 0;
+	}
+
+	return return_bank_id;
 }
