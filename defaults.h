@@ -25,6 +25,6 @@ const std::map < std::string, int > r_policies_map = { //Mapping policies to the
 	{"fifo", 1}
 };*/
 
-const ReplacementPolicy REPLACEMENT_POLICY = RANDOM ; //random=0
+const ReplacementPolicy REPLACEMENT_POLICY = FIFO ; //random=0
 
 #endif

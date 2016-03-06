@@ -109,7 +109,7 @@ bool Cache::access(uint address, bool write) {
 				cache_bank_id = vbank;
 				cache_set_id = access_set_index;
 				this->virtual_banks[vbank][access_set_index].dirty = write; //it's been written to now.. so set the dirty bit -- need to implement the write policy here.. later
-				break;
+				//break; //can't break anymore -- need to build full replacement_indexes to be used for updating the replacement table
 		}
 		replacement_lines.push_back(this->virtual_banks[vbank][access_set_index]); 
 		replacement_indexes.push_back(access_set_index);
