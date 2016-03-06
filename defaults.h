@@ -2,6 +2,9 @@
 	Ducksim: Cache Default values
 */
 
+#ifndef _DEFAULTS_H
+#define _DEFAULTS_H	
+
 #include <map>
 #include <string>
 #include "types.h"
@@ -23,3 +26,5 @@ const std::map < std::string, int > r_policies_map = { //Mapping policies to the
 };*/
 
 const ReplacementPolicy REPLACEMENT_POLICY = RANDOM ; //random=0
+
+#endif

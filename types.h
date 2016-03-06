@@ -13,4 +13,6 @@ enum ReplacementPolicy {
   LRU = 2,
 };
 
+using namespace std;
+
 #endif //MAIN_TYPES_H

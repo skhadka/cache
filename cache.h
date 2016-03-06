@@ -14,7 +14,7 @@
 #include "types.h"
 #include "replacement_policies.h"	
 
-using namespace std;
+//using namespace std;
 
 /* Cacheline */
 struct CacheLine {
@@ -77,9 +77,9 @@ class Cache {
 		bool run(istream& stream, int lines=-1); //run cache from stream.. can do cin as well
 
 		/*Get back the virtual bank id to be replaced which is the index of the replacement_line*/
-		int get_replacement_line( CacheLines replacement_lines );
+		int get_replacement_line( CacheLines cache_replacement_lines, ReplacementLines replacement_lines);
 	
-	
+
 	private:
 
 		/*Configuration*/
@@ -97,7 +97,7 @@ class Cache {
 
 		/*Replacement Policies*/
 		ReplacementPolicy replacement_policy;
-		//ReplacementStats *replacement_stats_table; 
+		CacheReplacementStats *replacement_stats; 
 		
 		/* Memory Hiearchy */
 		Cache *lower_level;
