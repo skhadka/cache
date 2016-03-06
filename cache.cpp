@@ -76,6 +76,7 @@ void Cache::reinit_cache(){
 	}
 
 	/*Reinitialize the Replacement Stats*/
+	(this->replacement_stats)->reinit();
 }
 
 /* Check if an address is in the cache and update hit/miss counts accordingly */
