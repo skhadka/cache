@@ -10,6 +10,9 @@ typedef unsigned int uint;
 enum ReplacementPolicy {
   RANDOM = 0,
   FIFO = 1,
+  LRU = 2,
 };
+
+using namespace std;
 
 #endif //MAIN_TYPES_H
