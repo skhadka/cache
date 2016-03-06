@@ -36,6 +36,15 @@ CacheReplacementStats::~CacheReplacementStats() {
 	/* Nothing to kill yet!! */
 }
 
+void CacheReplacementStats::reinit() {
+	for (int i=0; i<this->total_banks; ++i) {
+		for (int j=0; j<this->total_sets; ++j) {
+			this->replacement_bank[i][j].placement_order = 0;
+			this->replacement_bank[i][j].access_order = 0;
+			this->replacement_bank[i][j].count = 0;
+		}
+	}
+}
 
 int CacheReplacementStats::implement_replacement_policy (ReplacementLines replacement_lines, ReplacementPolicy policy_number) {
 	srand(time(0));
@@ -92,13 +101,16 @@ void CacheReplacementStats::update(ReplacementLines replacement_lines, int numbe
 
 }
 
-/* Replacement Policies */
+/************* Replacement Policies ********************/
+
+/*Random*/
 int CacheReplacementStats::policy_random(int number_banks) { 
 	int return_bank_id = rand() % number_banks; 
 	cout<< "Replacement Bank: "<<return_bank_id<<endl;
 	return return_bank_id;
 }
 
+/*FIFO*/
 int CacheReplacementStats::policy_fifo(ReplacementLines replacement_lines, int number_banks) {
 	int return_bank_id = -1;
 	for (int i=0; i<number_banks; ++i) {
@@ -112,6 +124,7 @@ int CacheReplacementStats::policy_fifo(ReplacementLines replacement_lines, int n
 	return return_bank_id;
 }
 
+/*LRU*/
 int CacheReplacementStats::policy_lru(ReplacementLines replacement_lines, int number_banks) {
 	int return_bank_id = -1;
 	for (int i=0; i<number_banks; ++i) {

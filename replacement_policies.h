@@ -32,7 +32,8 @@ class CacheReplacementStats {
 		CacheReplacementStats(int number_banks, int number_cache_sets);
 		~CacheReplacementStats();
 		
-		/*ReInit ReplacementBank and CurrentState*/
+		/*ReInit ReplacementBank aka set all stats to 0*/
+		void reinit();
 
 		/*Helper function to implement given replacement policy*/
 		int implement_replacement_policy (ReplacementLines replacement_lines, ReplacementPolicy policy_number);
@@ -49,8 +50,6 @@ class CacheReplacementStats {
 		/*Table of all stats needed for implementing different Replacement Policies*/
 		ReplacementStatsBank replacement_bank;
 
-		/*Vector to keep track of all the current max/min values of Replacement Stats for each set associated with the 1st bank*/
-		//vector <ReplacementStats> current_stats; 
 
 		/* Policies Implementation : Retun the VirtualBankID for replacement*/
 		int policy_random(int number_banks);
