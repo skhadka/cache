@@ -1,5 +1,5 @@
 <component name="ProjectRunConfigurationManager">
-  <configuration default="false" name="Main" type="CMakeRunConfiguration" factoryName="Application" PROGRAM_PARAMS="./address.txt" WORKING_DIR="file://$PROJECT_DIR$" PASS_PARENT_ENVS="FALSE" PROJECT_NAME="Main" TARGET_NAME="Main" CONFIG_NAME="Debug" RUN_TARGET_PROJECT_NAME="Main" RUN_TARGET_NAME="Main">
+  <configuration default="false" name="Main" type="CMakeRunConfiguration" factoryName="Application" PROGRAM_PARAMS="./resources/address.txt" WORKING_DIR="file://$PROJECT_DIR$" PASS_PARENT_ENVS_2="true" PROJECT_NAME="Ducksim" TARGET_NAME="main" CONFIG_NAME="Debug" RUN_TARGET_PROJECT_NAME="Ducksim" RUN_TARGET_NAME="main">
     <envs />
     <method />
   </configuration>

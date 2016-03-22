@@ -6,7 +6,7 @@ Run: ./cache address_file #lines
 
 */
 
-#include "cache.h"
+#include "../cache/include/cache.h"
 #include <fstream>
 #include <stdlib.h>
 

@@ -3,8 +3,8 @@
 */
 
 #include <stdlib.h>
-#include "cache.h"
-#include "hash_functions.h"
+#include "../include/cache.h"
+#include "../include/hash_functions.h"
 
 
 Cache::Cache(uint in_size, int in_associativity, int in_banks, int in_number_cache_lines,

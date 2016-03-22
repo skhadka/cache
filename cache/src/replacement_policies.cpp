@@ -2,7 +2,7 @@
 	Ducksim: Cache: Implement Cache Replacement Policies
 */
 
-#include "replacement_policies.h"
+#include "../include/replacement_policies.h"
 
 CacheReplacementStats::CacheReplacementStats(int number_banks, int number_cache_sets){
 	
@@ -51,11 +51,11 @@ int CacheReplacementStats::implement_replacement_policy (ReplacementLines replac
 	int return_bank_id = -1;
 	int number_banks = replacement_lines.size();
 	switch (policy_number) {
-		case 0:
+		case RANDOM:
 			/*Random Replacement Policy*/
 			return_bank_id = policy_random(number_banks);
 			break;
-		case 1:
+		case FIFO:
 			/*FIFO Replacement Policy*/
 			return_bank_id = policy_fifo(replacement_lines, number_banks);
 			break;
