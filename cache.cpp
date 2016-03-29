@@ -86,16 +86,14 @@ bool Cache::access(uint address, bool write) {
 	address = address / this->number_data_blocks; //get rid of block offset
 	uint access_set_tag = address / this->number_cache_sets; //get rid of index for the tag
 	uint access_index = address % this->number_cache_sets; //get the actual index of the address
+	
 	/*Start access stats*/
 	this->stats.access += 1;
 	bool hit = false;
 
-	/*Check is the tag is any one of lines in the set*/
-	//int access_index = access_set_index * this->associativity;
-	//int max_access_index = access_index + this->associativity;
 
 	CacheLines replacement_lines; //keep track of lines to be replaced so that replacement policy can select which one of them to replace later on
-	ReplacementLines replacement_indexes;
+	ReplacementLines replacement_indexes; //keep track of index of the replacement_lines in each virtual bank
 
 	/*Final values*/
 	int cache_bank_id = -1;
@@ -103,8 +101,7 @@ bool Cache::access(uint address, bool write) {
 
 	for (int vbank=0; vbank<this->number_virtual_banks; ++vbank) {
 		int access_set_index = hash_address(access_index, vbank, this->number_cache_sets, true); //get the set index where the index is mapped to in each bank : Rightnow just set associative
-		cout <<"VBank\tTag\tSIndex\tOffset"<<endl;
-		cout <<vbank<<"\t"<<access_set_tag <<"\t" <<access_set_index <<"\t" <<offset <<endl;
+		//if (vbank==0) cout <<"Tag, Index, Offset: "<<access_set_tag <<", " <<access_set_index <<", " <<offset<<endl;
 		if (this->virtual_banks[vbank][access_set_index].valid && (this->virtual_banks[vbank][access_set_index].tag == access_set_tag)) {//hit condition
 				hit = true;
 				cache_bank_id = vbank;
@@ -119,7 +116,10 @@ bool Cache::access(uint address, bool write) {
 	/* Implement Read policies on miss? Read through? */
 
 	/*Update cache stats*/
-	if (hit) this->stats.hits += 1;
+	if (hit) {
+		this->stats.hits += 1;
+		//cout << "<< HIT!! >>"<<endl;
+	}
 	else {
 		/* Address not in Cache => Implement Replacement Policy => Find out which cache line to replace */
 		int replacement_bank_id = get_replacement_line(replacement_lines, replacement_indexes); //replacement policy selects which virtual bank to replace cache line from
@@ -132,11 +132,19 @@ bool Cache::access(uint address, bool write) {
 
 		cache_bank_id = replacement_bank_id;
 		cache_set_id = replacement_set_index;
+		//cout << "<< MISS!! >>"<<endl;
 	}
+
+	//cout << "Bank, Set: "<<cache_bank_id<<" , "<<cache_set_id<<endl;
 
 	/*Update Replacement Stats*/
 	(this->replacement_stats)->update(replacement_indexes, this->number_virtual_banks, cache_bank_id, cache_set_id, hit);
 
+
+	/*printing replacement table.. get rid of it later*/
+	//std::ofstream f ("add.txt", std::ofstream::out);
+	//(this->replacement_stats)->dump_replacement_table(cout);
+	//f.close();
 	return hit;
 }
 
@@ -147,11 +155,11 @@ void Cache::dump_stats(ostream& stream) {
 	stream << "Miss Rate: "<<(double)this->stats.misses/this->stats.access<<endl;
 	stream << "Replacement Rate: "<<(double)this->stats.replacements/this->stats.access<<endl;
 	stream << "Write Back Rate: "<<(double)this->stats.write_backs/this->stats.access<<endl;
-	stream << endl;
-	stream << "Hits: "<<this->stats.hits<<endl;
-	stream << "Misses: "<<this->stats.misses<<endl;
-	stream << "Replacements: "<<this->stats.replacements<<endl;
-	stream << "Total Accesses: "<<this->stats.access;	
+	//stream << endl;
+	//stream << "Hits: "<<this->stats.hits<<endl;
+	//stream << "Misses: "<<this->stats.misses<<endl;
+	//stream << "Replacements: "<<this->stats.replacements<<endl;
+	//stream << "Total Accesses: "<<this->stats.access;	
 	stream << "\n---------------------------------------------------"<<endl<<endl;
 }
 
@@ -193,10 +201,8 @@ bool Cache::run(istream& stream, int lines) {
 		for (int i=0; i<lines; ++i){
 			stream.getline(hex_address, 11);
 			uint address = (uint) strtol(hex_address, NULL, 0);
-			cout<<"\nAddress: "<<hex_address<<", "<< address<< endl;
-			bool hit = access(address, false);
-			if (hit) cout << "<< HIT!! >>"<<endl;
-			else cout << "<< MISS!! >>"<<endl;
+			//cout<<"\nAddress: "<<hex_address<<", "<< address<< endl;
+			bool hit = access(address, false); 
 		}
 	}
 	return true;
@@ -223,6 +229,7 @@ int Cache::get_replacement_line(CacheLines cache_replacement_lines, ReplacementL
 		if (conflict) {
 			return_bank_id = (this->replacement_stats)->implement_replacement_policy(replacement_lines, this->replacement_policy);
 			this->stats.replacements += 1; //something was replaced
+			//cout << "<< REPLACEDDDDDDDDDDDDDDD.... >>"<<endl;
 		}
 		else { 
 			/* No Conflit => already found a replacement => nothing else to do.. */
