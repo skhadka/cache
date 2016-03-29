@@ -134,7 +134,7 @@ void CacheReplacementStats::dump_replacement_table(ostream& stream){
 /*Random*/
 int CacheReplacementStats::policy_random(int number_banks) { 
 	int return_bank_id = rand() % number_banks; 
-	cout<< "Replacement Bank: "<<return_bank_id<<endl;
+	//cout<< "Replacement Bank: "<<return_bank_id<<endl;
 	return return_bank_id;
 }
 
@@ -148,7 +148,7 @@ int CacheReplacementStats::policy_fifo(ReplacementLines replacement_lines, int n
 			break;
 		}
 	}
-	cout<< "Replacement Bank: "<<return_bank_id<<endl;
+	//cout<< "Replacement Bank: "<<return_bank_id<<endl;
 	return return_bank_id;
 }
 
@@ -162,6 +162,6 @@ int CacheReplacementStats::policy_lru(ReplacementLines replacement_lines, int nu
 			break;
 		}
 	}
-	cout<< "Replacement Bank: "<<return_bank_id<<endl;
+	//cout<< "Replacement Bank: "<<return_bank_id<<endl;
 	return return_bank_id;
 }

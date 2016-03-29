@@ -17,7 +17,7 @@ const int NUMBER_CACHE_LINES = 8;//1024; //1024 lines => 10 bits
 const int NUMBER_DATA_BLOCKS = 4;//64; //Data Block = 64 bytes => 8 bits
 
 /*Replacement Policy*/
-const ReplacementPolicy REPLACEMENT_POLICY = RANDOM; //random=0
+const ReplacementPolicy REPLACEMENT_POLICY = LRU; //random=0
 
 /*Read Policy*/
 
