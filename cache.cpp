@@ -95,7 +95,7 @@ bool Cache::access(uint address, bool write) {
 	//int max_access_index = access_index + this->associativity;
 
 	CacheLines replacement_lines; //keep track of lines to be replaced so that replacement policy can select which one of them to replace later on
-	ReplacementLines replacement_indexes;
+	ReplacementLines replacement_indexes; //keep track of index of the replacement_lines in each virtual bank
 
 	/*Final values*/
 	int cache_bank_id = -1;
@@ -119,7 +119,9 @@ bool Cache::access(uint address, bool write) {
 	/* Implement Read policies on miss? Read through? */
 
 	/*Update cache stats*/
-	if (hit) this->stats.hits += 1;
+	if (hit) {
+		this->stats.hits += 1;
+	}
 	else {
 		/* Address not in Cache => Implement Replacement Policy => Find out which cache line to replace */
 		int replacement_bank_id = get_replacement_line(replacement_lines, replacement_indexes); //replacement policy selects which virtual bank to replace cache line from

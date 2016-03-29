@@ -55,7 +55,6 @@ class CacheReplacementStats {
 		int policy_random(int number_banks);
 		int policy_fifo(ReplacementLines replacement_lines, int number_banks);
 		int policy_lru(ReplacementLines replacement_lines, int number_banks);
-
 };
 
 

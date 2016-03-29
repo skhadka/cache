@@ -59,6 +59,10 @@ int CacheReplacementStats::implement_replacement_policy (ReplacementLines replac
 			/*FIFO Replacement Policy*/
 			return_bank_id = policy_fifo(replacement_lines, number_banks);
 			break;
+		case 2:
+			/*LRU Replacement Policy*/
+			return_bank_id = policy_lru(replacement_lines, number_banks);
+			break;
 		default:
 			cout << "Invalid Replacement Policy!" <<endl;
 			exit(1);
@@ -73,31 +77,37 @@ void CacheReplacementStats::update(ReplacementLines replacement_lines, int numbe
 	int current_access_order = this->replacement_bank[bank_id][set_id].access_order;
 	double current_count = this->replacement_bank[bank_id][set_id].count; //keep track of max_count for normalization?
 
+	cout <<"Current values: placement, access, count: "<<current_placement_order<<" , "<<current_access_order<<" , "<<current_count<<endl;
 	/*Access Ordering is changed per access => Increase all values and set the input ones to 1*/
+	
+
 	cout << "before loop" <<endl;
 	for (int i=0; i<number_banks ; ++i) {
 		int set = replacement_lines[i];
 
-		cout << "RP bank, set: "<<i <<","<<set<<endl;
+		//cout << "RP bank, set: "<<i <<","<<set<<endl;
 
-		if( (replacement_bank[i][set].access_order > 0) && (replacement_bank[i][set].access_order < current_access_order) ) {
-			cout << "access"<<endl;
+		if( (replacement_bank[i][set].access_order > 0) && ((replacement_bank[i][set].access_order < current_access_order) || current_access_order==0) ) {
+			
 			this->replacement_bank[i][set].access_order += 1;
+			cout << "access: bank,set,value = "<<i<<" , "<<set<<" , "<<this->replacement_bank[i][set].access_order<< endl;
+			if (!hit) {
+				/* New placement on the cache => update the placement ordering of all the elements that were placed before it*/
+				//cout<<"placement"<<endl;
+				this->replacement_bank[i][set].placement_order += 1; 
+				cout << "access: bank,set,value = "<<i<<" , "<<set<<" , "<<this->replacement_bank[i][set].placement_order<< endl;
+			}
 		}
 		
-		if (!hit && (replacement_bank[i][set].placement_order > 0) && (replacement_bank[i][set].placement_order < current_placement_order) ) {
-			/* New placement on the cache => update the placement ordering of all the elements that were placed before it*/
-			cout<<"placement"<<endl;
-			this->replacement_bank[i][set].placement_order += 1; 
-		}
 		//}
 	}
 
 	/*Update values for the accessed lines*/
-	cout<<"out of loop"<<endl;
 	if (!hit) this->replacement_bank[bank_id][set_id].placement_order = 1;
 	this->replacement_bank[bank_id][set_id].access_order = 1;
-	//this->replacement_bank[bank_id][set_id].count = 1; -- Do something eventually	
+	//this->replacement_bank[bank_id][set_id].count = 1; -- Do something eventually
+	cout<<"out of loop"<<endl;
+		
 
 }
 

@@ -34,7 +34,6 @@ struct CacheStatistics {
 	uint access; //total memory references 
 	uint replacements; //total number of cache line replacements
 	uint write_backs; //total number of write backs
-	//double bandwidth;
 };
 
 /*
@@ -78,6 +77,8 @@ class Cache {
 
 		/*Get back the virtual bank id to be replaced which is the index of the replacement_line*/
 		int get_replacement_line( CacheLines cache_replacement_lines, ReplacementLines replacement_lines);
+
+		/*Implement Replacement Policy*/
 	
 
 	private:
@@ -88,14 +89,14 @@ class Cache {
 		int number_virtual_banks; //keep track of virtual banks for implementing associativity 
 		int banks; //just use 1 for now
 		int number_cache_lines; //total number
-		int number_cache_sets; 
+		int number_cache_sets;  //total number / associativity or virtual banks
 		int number_data_blocks; //per cache line
 		vector<CacheLines> virtual_banks; //bank = collection of cache lines that belong to different sets
 		
 		/*Stats*/
 		CacheStatistics stats;
 
-		/*Replacement Policies*/
+		/*Replacement Policy + Stat for implementing Replacement Policy*/
 		ReplacementPolicy replacement_policy;
 		CacheReplacementStats *replacement_stats; 
 		
