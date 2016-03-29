@@ -8,7 +8,8 @@
 #include <iostream>
 #include <math.h>
 #include <vector>	
-#include <iomanip>	
+#include <iomanip>
+#include <fstream>	
 
 #include "defaults.h"
 #include "types.h"
