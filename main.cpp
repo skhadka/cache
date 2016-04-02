@@ -6,15 +6,19 @@ Run: ./cache address_file #lines
 
 */
 
-#include "cache.h"
 #include <fstream>
 #include <stdlib.h>
+#include "config.hpp"
+#include "types.h"
 
-int main(int argc, char ** argv) {
-	Cache default_cache = Cache();
+using namespace std;
+
+int main(int argc, char** argv) {
+	
+	Cache default_cache = Config::configureCache();
 	ifstream input_file(argv[1]);
-	if (! input_file.is_open()) {
-		cout << "\nError... Cannot open address file!!!" <<endl;
+	if (!input_file.is_open()) {
+		cout << "\nError... Cannot open address file!!!" << endl;
 	}
 	else {
 		long lines = strtoul(argv[2], NULL, 0);

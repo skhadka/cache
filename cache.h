@@ -10,8 +10,6 @@
 #include <vector>	
 #include <iomanip>
 #include <fstream>	
-
-#include "defaults.h"
 #include "types.h"
 #include "replacement_policies.h"	
 
@@ -50,9 +48,8 @@ class Cache {
 	
 	public: 
 		/*Default Constructor*/
-		Cache(uint in_size=CACHE_SIZE, int in_associativity=ASSOCIATIVITY, int in_banks=BANKS,
-			int in_number_cache_lines=NUMBER_CACHE_LINES, int in_number_data_blocks=NUMBER_DATA_BLOCKS, 
-			ReplacementPolicy in_replacement_policy=REPLACEMENT_POLICY);
+		Cache(uint in_size, int in_associativity, int in_banks, int in_number_cache_lines, int in_number_data_blocks, 
+			ReplacementPolicy in_replacement_policy);
 		
 		/*Default Destructor*/
 		~Cache();
