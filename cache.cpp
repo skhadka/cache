@@ -189,22 +189,11 @@ void Cache::dump_cache(ostream& stream) { /*Will need more changes with skewed a
 	stream << "--------------------------------------------------"<<endl;	
 }
 
-bool Cache::run(istream& stream, int lines) {
-	char hex_address[11];
-	if (lines <= 0) {
-		while(stream.getline(hex_address, 11)) {
-			uint address = (uint) strtol(hex_address, NULL, 0);
-			bool hit = access(address, false);
-		}
-	}
-	else {
-		for (int i=0; i<lines; ++i){
-			stream.getline(hex_address, 11);
-			uint address = (uint) strtol(hex_address, NULL, 0);
-			//cout<<"\nAddress: "<<hex_address<<", "<< address<< endl;
-			bool hit = access(address, false); 
-		}
-	}
+bool Cache::run(vector <uint> addresses) {
+	
+	for ( vector<uint>::iterator it = addresses.begin() ; it != addresses.end(); ++it) {
+		bool hit = access(*it, false); 
+	}	
 	return true;
 }
 

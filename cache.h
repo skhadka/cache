@@ -74,7 +74,7 @@ class Cache {
 		void dump_cache(ostream& stream);
 
 		/*Run cache based on given input stream for #lines, -1 means complete run*/
-		bool run(istream& stream, int lines=-1); //run cache from stream.. can do cin as well
+		bool run(vector <uint> addresses); //run cache from stream.. can do cin as well
 
 		/*Get back the virtual bank id to be replaced which is the index of the replacement_line*/
 		int get_replacement_line( CacheLines cache_replacement_lines, ReplacementLines replacement_lines);
